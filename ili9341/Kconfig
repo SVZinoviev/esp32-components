@@ -1,0 +1,105 @@
+menu "ILI9341"
+
+	choice HARDWARE
+		prompt "Hardware to run on"
+		default FREENOVE_ESP32_S3
+		help
+			Select board, hardware configuration here.
+
+	config FREENOVE_ESP32_S3
+		bool "Freenove esp32 board, lcd is spi connected"
+
+	config HW_CUSTOM
+		bool "Custom hardware"
+
+	endchoice
+
+	config HW_LCD_MISO_GPIO_CUST
+		int "LCD MISO pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 13
+
+	config HW_LCD_MOSI_GPIO_CUST
+		int "LCD MOSI pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 11
+
+	config HW_LCD_CLK_GPIO_CUST
+		int "LCD CLK pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 12
+
+	config HW_LCD_CS_GPIO_CUST
+		int "LCD CS pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 10
+
+	config HW_LCD_DC_GPIO_CUST
+		int "LCD DC pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 46
+
+	config HW_LCD_RESET_GPIO_CUST
+		int "LCD RESET pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 1
+
+	config HW_LCD_BL_GPIO_CUST
+		int "LCD Backlight Enable pin"
+		depends on HW_CUSTOM
+		range 1 46
+		default 45
+
+	config HW_INV_BL_CUST
+		bool "Invert backlight output"
+		default n
+		depends on HW_CUSTOM
+
+
+	config HW_INV_BL
+		bool
+		default HW_INV_BL_CUST if HW_CUSTOM
+		default n if FREENOVE_ESP32_S3
+
+	config HW_LCD_MISO_GPIO
+		int
+		default HW_LCD_MISO_GPIO_CUST if HW_CUSTOM
+		default 13 if FREENOVE_ESP32_S3
+
+	config HW_LCD_MOSI_GPIO
+		int
+		default HW_LCD_MOSI_GPIO_CUST if HW_CUSTOM
+		default 11 if FREENOVE_ESP32_S3
+
+	config HW_LCD_CLK_GPIO
+		int
+		default HW_LCD_CLK_GPIO_CUST if HW_CUSTOM
+		default 12 if FREENOVE_ESP32_S3
+
+	config HW_LCD_CS_GPIO
+		int
+		default HW_LCD_CS_GPIO_CUST if HW_CUSTOM
+		default 10 if FREENOVE_ESP32_S3
+
+	config HW_LCD_DC_GPIO
+		int
+		default HW_LCD_DC_GPIO_CUST if HW_CUSTOM
+		default 46 if FREENOVE_ESP32_S3
+
+	config HW_LCD_RESET_GPIO
+		int
+		default HW_LCD_RESET_GPIO_CUST if HW_CUSTOM
+		default -1 if FREENOVE_ESP32_S3
+
+	config HW_LCD_BL_GPIO
+		int
+		default HW_LCD_BL_GPIO_CUST if HW_CUSTOM
+		default 45 if FREENOVE_ESP32_S3
+
+endmenu
