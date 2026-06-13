@@ -1,0 +1,173 @@
+menu "ST7789V"
+
+	choice ST7789_HARDWARE
+		prompt "Hardware to run on"
+		default ST7789_LILYGO_T_DISPLAY_S3
+		help
+			Select board, hardware configuration here.
+
+	config ST7789_LILYGO_T_DISPLAY_S3
+		bool "Lilygo T-Display S3, lcd is i80 8-bit parallel connected"
+
+	config ST7789_HW_CUSTOM
+		bool "Custom hardware"
+
+	endchoice
+
+
+	config ST7789_HW_LCD_DATA0_GPIO_CUST
+		int "LCD i80 data bit 0 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 39
+
+	config ST7789_HW_LCD_DATA1_GPIO_CUST
+		int "LCD i80 data bit 1 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 40
+
+	config ST7789_HW_LCD_DATA2_GPIO_CUST
+		int "LCD i80 data bit 2 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 41
+
+	config ST7789_HW_LCD_DATA3_GPIO_CUST
+		int "LCD i80 data bit 3 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 42
+
+	config ST7789_HW_LCD_DATA4_GPIO_CUST
+		int "LCD i80 data bit 4 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 45
+
+	config ST7789_HW_LCD_DATA5_GPIO_CUST
+		int "LCD i80 data bit 5 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 46
+
+	config ST7789_HW_LCD_DATA6_GPIO_CUST
+		int "LCD i80 data bit 6 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 47
+
+	config ST7789_HW_LCD_DATA7_GPIO_CUST
+		int "LCD i80 data bit 7 pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 48
+
+	config ST7789_HW_LCD_WR_GPIO_CUST
+		int "LCD WR (write strobe) pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 8
+
+	config ST7789_HW_LCD_RD_GPIO_CUST
+		int "LCD RD (read strobe) pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 9
+
+	config ST7789_HW_LCD_DC_GPIO_CUST
+		int "LCD DC pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 7
+
+	config ST7789_HW_LCD_CS_GPIO_CUST
+		int "LCD CS pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 6
+
+	config ST7789_HW_LCD_RST_GPIO_CUST
+		int "LCD RESET pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 5
+
+	config ST7789_HW_LCD_BL_GPIO_CUST
+		int "LCD Backlight Enable pin"
+		depends on ST7789_HW_CUSTOM
+		range 1 48
+		default 38
+
+
+	config ST7789_HW_LCD_DATA0_GPIO
+		int
+		default ST7789_HW_LCD_DATA0_GPIO_CUST if ST7789_HW_CUSTOM
+		default 39 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA1_GPIO
+		int
+		default ST7789_HW_LCD_DATA1_GPIO_CUST if ST7789_HW_CUSTOM
+		default 40 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA2_GPIO
+		int
+		default ST7789_HW_LCD_DATA2_GPIO_CUST if ST7789_HW_CUSTOM
+		default 41 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA3_GPIO
+		int
+		default ST7789_HW_LCD_DATA3_GPIO_CUST if ST7789_HW_CUSTOM
+		default 42 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA4_GPIO
+		int
+		default ST7789_HW_LCD_DATA4_GPIO_CUST if ST7789_HW_CUSTOM
+		default 45 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA5_GPIO
+		int
+		default ST7789_HW_LCD_DATA5_GPIO_CUST if ST7789_HW_CUSTOM
+		default 46 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA6_GPIO
+		int
+		default ST7789_HW_LCD_DATA6_GPIO_CUST if ST7789_HW_CUSTOM
+		default 47 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DATA7_GPIO
+		int
+		default ST7789_HW_LCD_DATA7_GPIO_CUST if ST7789_HW_CUSTOM
+		default 48 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_WR_GPIO
+		int
+		default ST7789_HW_LCD_WR_GPIO_CUST if ST7789_HW_CUSTOM
+		default 8 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_RD_GPIO
+		int
+		default ST7789_HW_LCD_RD_GPIO_CUST if ST7789_HW_CUSTOM
+		default 9 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_DC_GPIO
+		int
+		default ST7789_HW_LCD_DC_GPIO_CUST if ST7789_HW_CUSTOM
+		default 7 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_CS_GPIO
+		int
+		default ST7789_HW_LCD_CS_GPIO_CUST if ST7789_HW_CUSTOM
+		default 6 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_RST_GPIO
+		int
+		default ST7789_HW_LCD_RST_GPIO_CUST if ST7789_HW_CUSTOM
+		default 5 if ST7789_LILYGO_T_DISPLAY_S3
+
+	config ST7789_HW_LCD_BL_GPIO
+		int
+		default ST7789_HW_LCD_BL_GPIO_CUST if ST7789_HW_CUSTOM
+		default 38 if ST7789_LILYGO_T_DISPLAY_S3
+
+endmenu
