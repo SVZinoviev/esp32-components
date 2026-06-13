@@ -33,20 +33,20 @@
 #define ST7789_PVGAMCTRL 0xE0  // Positive voltage gamma control
 #define ST7789_NVGAMCTRL 0xE1  // Negative voltage gamma control
 
-/* OR this into st7789v_cmd_t.len to wait 120 ms after sending the command. */
+/* OR this into the .len field to wait 120 ms after sending the command. */
 #define ST7789_CMD_DELAY 0x80
 #define ST7789_LEN_MASK  0x7F
 
 static esp_lcd_panel_io_handle_t io_handle = NULL;
 static esp_lcd_panel_handle_t panel_handle = NULL;
 
-typedef struct {
+struct st7789v_cmd {
   uint8_t addr;
   uint8_t param[14];  // 14 is enough (gamma curves use all 14)
   uint8_t len;        // low 7 bits = byte count; ST7789_CMD_DELAY = wait
-} st7789v_cmd_t;
+};
 
-static const st7789v_cmd_t st7789v_init_sequence[] = {
+static const struct st7789v_cmd st7789v_init_sequence[] = {
     // Command, {Parameters}, Parameter Length (| ST7789_CMD_DELAY to wait)
     {ST7789_SWRESET, {0}, 0},                 // software reset
     {ST7789_SLPOUT, {0}, ST7789_CMD_DELAY},   // wake panel, then wait 120 ms
@@ -180,7 +180,7 @@ int st7789v_esp_driver_init(
   esp_lcd_panel_set_gap(panel_handle, 0, 35);
 
   for (uint8_t i = 0;
-       i < (sizeof(st7789v_init_sequence) / sizeof(st7789v_cmd_t)); i++) {
+       i < (sizeof(st7789v_init_sequence) / sizeof(struct st7789v_cmd)); i++) {
     esp_lcd_panel_io_tx_param(io_handle, st7789v_init_sequence[i].addr,
                               st7789v_init_sequence[i].param,
                               st7789v_init_sequence[i].len & ST7789_LEN_MASK);

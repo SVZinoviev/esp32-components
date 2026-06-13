@@ -43,19 +43,19 @@
 #define ILI9341_EN3GAM      0xF2  /* Enable 3-gamma function                   */
 #define ILI9341_PUMPRC      0xF7  /* Pump ratio control (extended)             */
 
-/* OR this into ili9341_cmd_t.len to wait 120 ms after sending the command. */
+/* OR this into the .len field to wait 120 ms after sending the command. */
 #define ILI9341_CMD_DELAY   0x80
 #define ILI9341_LEN_MASK    0x7F
 
 static esp_lcd_panel_io_handle_t io_handle = NULL;
 
-typedef struct {
+struct ili9341_cmd {
     uint8_t addr;
     uint8_t param[16];  /* 15 needed for gamma; round up for alignment */
     uint8_t len;        /* low 7 bits = byte count; ILI9341_CMD_DELAY = wait */
-} ili9341_cmd_t;
+};
 
-static const ili9341_cmd_t ili9341_init_sequence[] = {
+static const struct ili9341_cmd ili9341_init_sequence[] = {
     {ILI9341_SWRESET, {0}, ILI9341_CMD_DELAY},      /* reset, then wait 120 ms */
 
     {ILI9341_PWCTRB, {
@@ -175,13 +175,15 @@ int ili9341_esp_driver_init(
         .spi_mode = 0,
         .trans_queue_depth = 10,
         .on_color_trans_done = bus_transmission_complete_cb,
+        .cs_ena_pretrans = 0,
+        .cs_ena_posttrans = 0
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(
         (esp_lcd_spi_bus_handle_t)LCD_SPI_HOST, &io_config, &io_handle));
 
     /* Walk the init table - same shape as st7789v_esp_driver.c. */
     for (uint8_t i = 0;
-         i < (sizeof(ili9341_init_sequence) / sizeof(ili9341_cmd_t)); i++) {
+         i < (sizeof(ili9341_init_sequence) / sizeof(struct ili9341_cmd)); i++) {
         esp_lcd_panel_io_tx_param(io_handle, ili9341_init_sequence[i].addr,
                                   ili9341_init_sequence[i].param,
                                   ili9341_init_sequence[i].len & ILI9341_LEN_MASK);
