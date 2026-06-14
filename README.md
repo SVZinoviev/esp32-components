@@ -54,9 +54,15 @@ Functions:
 - Primitives: `gfx_line`, `gfx_rect`, `gfx_circle` (each with thickness; rect
   and circle support fill + border in separate colors).
 - Present: `gfx_flush` (whole canvas), `gfx_flush_area` (sub-rectangle).
-- Color helpers (`gfx_color.h`): `gfx_rgb888_to_rgb565`, `gfx_rgb565_to_rgb888`,
-  `gfx_rgb565_to_mono`, `gfx_mono`, `gfx_rgb565_bswap`, and `gfx_map_rgb565`
-  (map an RGB565 color to the canvas' native encoding).
+- Text (`gfx_font.h`): `struct gfx_textbox` (font, fg/bg color, transparent,
+  auto-size, scale, readable bounds) with `gfx_textbox_init`,
+  `gfx_text_measure`, `gfx_text_place`, `gfx_textbox_get_bounds`. Bitmap fonts
+  are generated from OTF/TTF by `tools/otf_to_gfxfont.py`.
+- Color helpers (`gfx_color.h`): `GFX_RGB888_TO_RGB565` (constant-expression
+  macro, ROM-storable; `gfx_rgb888_to_rgb565` is a lowercase alias),
+  `gfx_rgb565_to_rgb888`, `gfx_rgb565_to_mono`, `gfx_mono`, `gfx_rgb565_bswap`,
+  and `gfx_map_rgb565` (map an RGB565 color to the canvas' native encoding).
+- `GFX_SWAP_COLOR_BYTES` build switch: bake the panel's big-endian byte order
+  into color constants so the glue blits the framebuffer with no per-pixel swap.
 
 See `component/gfx/README.md` for the API model and a glue-layer example.
-
