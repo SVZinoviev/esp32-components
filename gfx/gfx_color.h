@@ -16,21 +16,69 @@ extern "C" {
 typedef uint16_t gfx_color_t;
 
 /**
- * @brief Pack 24-bit RGB888 into a 16-bit RGB565 color.
+ * @brief Compile-time switch for RGB565 byte order.
  *
- * The low bits that do not fit (3 of red/blue, 2 of green) are discarded.
+ * Define to 1 (e.g. a `-DGFX_SWAP_COLOR_BYTES=1` build flag, or before
+ * including this header) to have ::GFX_RGB888_TO_RGB565 emit colors with their
+ * two bytes swapped. Most SPI/i80 panels latch RGB565 big-endian while the
+ * host is little-endian; baking the swap into the constant lets the glue blit
+ * the framebuffer straight to the panel with no per-pixel work. Defaults to 0
+ * (host byte order).
+ *
+ * @note When enabled, stored colors are in display byte order and are opaque:
+ *       do not feed them to gfx_rgb565_to_rgb888()/gfx_rgb565_to_mono(), which
+ *       expect host-order RGB565.
+ */
+#ifndef GFX_SWAP_COLOR_BYTES
+#define GFX_SWAP_COLOR_BYTES 0
+#endif
+
+/**
+ * @brief Swap the two bytes of a 16-bit value (constant expression).
+ *
+ * @param v 16-bit value.
+ * @return @p v with its high and low bytes exchanged.
+ */
+#define GFX_BSWAP16(v) \
+    ((uint16_t)((((uint16_t)(v)) >> 8) | (((uint16_t)(v)) << 8)))
+
+/**
+ * @brief Pack R, G, B into host-order RGB565 (constant expression).
+ *
+ * The byte order is always host order, regardless of ::GFX_SWAP_COLOR_BYTES.
+ * Use ::GFX_RGB888_TO_RGB565 unless you specifically need the unswapped value.
  *
  * @param r Red channel, 0..255.
  * @param g Green channel, 0..255.
  * @param b Blue channel, 0..255.
- * @return The equivalent RGB565 color.
  */
-static inline gfx_color_t gfx_rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b)
-{
-    return (gfx_color_t)(((uint16_t)(r & 0xF8) << 8) |
-                         ((uint16_t)(g & 0xFC) << 3) |
-                         ((uint16_t)(b) >> 3));
-}
+#define GFX_RGB888_TO_RGB565_RAW(r, g, b)             \
+    ((uint16_t)((((uint16_t)((r) & 0xF8)) << 8) |     \
+                (((uint16_t)((g) & 0xFC)) << 3) |     \
+                 ((uint16_t)((b)) >> 3)))
+
+/**
+ * @brief Pack 24-bit RGB888 into a 16-bit RGB565 color (constant expression).
+ *
+ * A macro, so it can build ROM-stored constants and initialize `static const`
+ * tables. Honors ::GFX_SWAP_COLOR_BYTES. The low bits that do not fit (3 of
+ * red/blue, 2 of green) are discarded.
+ *
+ * @warning Function-like macro: do not pass arguments with side effects.
+ *
+ * @param r Red channel, 0..255.
+ * @param g Green channel, 0..255.
+ * @param b Blue channel, 0..255.
+ */
+#if GFX_SWAP_COLOR_BYTES
+#define GFX_RGB888_TO_RGB565(r, g, b) \
+    GFX_BSWAP16(GFX_RGB888_TO_RGB565_RAW(r, g, b))
+#else
+#define GFX_RGB888_TO_RGB565(r, g, b) GFX_RGB888_TO_RGB565_RAW(r, g, b)
+#endif
+
+/** @brief Lowercase alias of ::GFX_RGB888_TO_RGB565 (source compatibility). */
+#define gfx_rgb888_to_rgb565(r, g, b) GFX_RGB888_TO_RGB565(r, g, b)
 
 /**
  * @brief Expand an RGB565 color back to its 8-bit-per-channel components.
@@ -94,7 +142,7 @@ static inline gfx_color_t gfx_mono(uint8_t brightness)
  */
 static inline gfx_color_t gfx_rgb565_bswap(gfx_color_t color)
 {
-    return (gfx_color_t)((color >> 8) | (color << 8));
+    return GFX_BSWAP16(color);
 }
 
 #ifdef __cplusplus
