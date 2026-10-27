@@ -30,8 +30,17 @@ static inline void put_raw(struct gfx *gfx, int x, int y, gfx_color_t color)
 static void fill_span(struct gfx *gfx, int x0, int x1, int y, gfx_color_t color)
 {
     if (x0 > x1) { int t = x0; x0 = x1; x1 = t; }
-    for (int x = x0; x <= x1; x++) {
-        put_raw(gfx, x, y, color);
+    if (y < 0 || y >= gfx->display.height || x1 < 0 || x0 >= gfx->display.width)
+        return;
+    if (x0 < 0) x0 = 0;
+    if (x1 >= gfx->display.width) x1 = gfx->display.width - 1;
+    size_t count = (size_t)(x1 - x0 + 1);
+    size_t offset = (size_t)y * gfx->display.width + x0;
+    if (gfx->bytes_per_px == 1) {
+        memset(gfx->fb + offset, (uint8_t)color, count);
+    } else {
+        uint16_t *row = (uint16_t *)gfx->fb + offset;
+        for (size_t i = 0; i < count; ++i) row[i] = color;
     }
 }
 
@@ -39,6 +48,8 @@ static void fill_rect_raw(struct gfx *gfx, int x0, int y0, int x1, int y1,
                           gfx_color_t color)
 {
     if (y0 > y1) { int t = y0; y0 = y1; y1 = t; }
+    if (y0 < 0) y0 = 0;
+    if (y1 >= gfx->display.height) y1 = gfx->display.height - 1;
     for (int y = y0; y <= y1; y++) {
         fill_span(gfx, x0, x1, y, color);
     }
