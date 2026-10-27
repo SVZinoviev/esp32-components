@@ -139,8 +139,7 @@ int st7789v_esp_driver_init(
           },
       .bus_width = 8,
       .max_transfer_bytes = LCD_WIDTH * LCD_HEIGHT * sizeof(uint16_t),
-      .psram_trans_align = 64,
-      .sram_trans_align = 4};
+      .dma_burst_size = 64};
   esp_lcd_new_i80_bus(&i80_bus_config, &i80_bus);
 
   esp_lcd_panel_io_i80_config_t io_config = {
@@ -162,7 +161,7 @@ int st7789v_esp_driver_init(
 
   esp_lcd_panel_dev_config_t panel_config = {
       .reset_gpio_num = CONFIG_ST7789_HW_LCD_RST_GPIO,
-      .color_space = ESP_LCD_COLOR_SPACE_RGB,
+      .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
       .bits_per_pixel = 16,
       .vendor_config = NULL};
   esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle);

@@ -1,5 +1,13 @@
 menu "ILI9341"
 
+    config LCD_SPI_CLOCK_MHZ
+        int "LCD SPI clock (MHz)"
+        range 10 80
+        default 40
+        help
+            Keep 40 MHz for the tested configuration. Higher clocks require
+            checking the display and wiring for corruption and reliability.
+
 	choice HARDWARE
 		prompt "Hardware to run on"
 		default FREENOVE_ESP32_S3

@@ -11,7 +11,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define LCD_PIXEL_CLOCK_HZ  (40 * 1000 * 1000)
+#define LCD_PIXEL_CLOCK_HZ  (CONFIG_LCD_SPI_CLOCK_MHZ * 1000 * 1000)
 #define LCD_SPI_HOST        SPI2_HOST
 
 /* ILI9341 command set (datasheet section 8). Only the commands used by this
@@ -223,7 +223,7 @@ void ili9341_esp_driver_draw_bitmap(uint16_t x, uint16_t y, uint16_t width,
 
     size_t pixels = (size_t)(width) * (size_t)(height);
 
-    esp_lcd_panel_io_tx_param(io_handle, ILI9341_CASET, col, sizeof(col));
-    esp_lcd_panel_io_tx_param(io_handle, ILI9341_PASET, row, sizeof(row));
-    esp_lcd_panel_io_tx_color(io_handle, ILI9341_RAMWR, data, pixels << 1);
+    ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, ILI9341_CASET, col, sizeof(col)));
+    ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, ILI9341_PASET, row, sizeof(row)));
+    ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, ILI9341_RAMWR, data, pixels << 1));
 }
